@@ -1,8 +1,23 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict
 import json
+from .database import init_db, save_offline_message, get_and_clear_pending_messages
 
 app = FastAPI(title="Secure E2E Messaging Backend")
+
+# Initialize database on startup
+@app.on_event("startup")
+async def startup_event():
+    init_db()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For development, allow all
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ConnectionManager:
     def __init__(self):
@@ -13,6 +28,12 @@ class ConnectionManager:
         await websocket.accept()
         self.active_connections[user_id] = websocket
         print(f"User connected: {user_id}")
+        
+        # Deliver any pending offline messages
+        pending = get_and_clear_pending_messages(user_id)
+        for msg in pending:
+            await websocket.send_text(json.dumps(msg))
+            
         await self.broadcast_users()
 
     def disconnect(self, user_id: str):
@@ -48,9 +69,19 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
                 message["sender"] = user_id
                 
                 if target:
-                    await manager.send_personal_message(json.dumps(message), target)
+                    # If target is online, send immediately
+                    if target in manager.active_connections:
+                        await manager.send_personal_message(json.dumps(message), target)
+                    else:
+                        # Otherwise, queue for offline delivery
+                        save_offline_message(
+                            target_id=target,
+                            sender_id=user_id,
+                            payload=message.get("payload", ""),
+                            msg_type=message.get("type", "chat")
+                        )
                 else:
-                    # If no target is specified, we might handle errors or broadcast, but let's require a target for E2E
+                    # If no target is specified, we might handle errors or broadcast
                     pass
             except json.JSONDecodeError:
                 pass

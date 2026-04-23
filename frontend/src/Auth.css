@@ -1,0 +1,187 @@
+.auth-wrapper {
+  height: 100vh;
+  width: 100vw;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  color: white;
+}
+
+/* 🎨 Ambient Background Blobs */
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(150px);
+  opacity: 0.15;
+  animation: float-blob 10s infinite ease-in-out alternate;
+}
+
+.blob-purple {
+  width: 700px;
+  height: 700px;
+  background: #3e0a5e; /* Deep midnight purple */
+  top: -200px;
+  left: -200px;
+}
+
+.blob-blue {
+  width: 600px;
+  height: 600px;
+  background: #0a1f44; /* Deep voyage blue */
+  bottom: -200px;
+  right: -200px;
+  animation-delay: 2s;
+}
+
+@keyframes float-blob {
+  0% { transform: translateY(0px) scale(1); }
+  100% { transform: translateY(40px) scale(1.1); }
+}
+
+/* ✨ Glassmorphic Card */
+.auth-card-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.auth-card {
+  padding: 40px;
+  border-radius: 24px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  animation: authFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-logo {
+  color: var(--color-blue-500);
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 10px rgba(10, 132, 255, 0.4));
+}
+
+.auth-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.auth-header p {
+  color: #aaa;
+  font-size: 14px;
+}
+
+/* フォーム */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ccc;
+  margin-left: 4px;
+}
+
+.input-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  color: #aaa;
+  pointer-events: none;
+}
+
+.input-field input {
+  width: 100%;
+  padding: 12px 14px 12px 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.input-field input:focus {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.05);
+}
+
+.auth-submit {
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.auth-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.auth-footer button {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.auth-footer button span {
+  color: white;
+  font-weight: 600;
+}
+
+.auth-footer button:hover {
+  color: white;
+}
