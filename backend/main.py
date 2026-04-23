@@ -48,8 +48,11 @@ class ConnectionManager:
     async def broadcast_users(self):
         users_list = list(self.active_connections.keys())
         msg = json.dumps({"type": "users", "users": users_list})
-        for connection in self.active_connections.values():
-            await connection.send_text(msg)
+        for user_id, connection in list(self.active_connections.items()):
+            try:
+                await connection.send_text(msg)
+            except:
+                self.disconnect(user_id)
 
 manager = ConnectionManager()
 
@@ -59,6 +62,10 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
     try:
         while True:
             data = await websocket.receive_text()
+            log_entry = f"\n[VAULT PULSE] Sender: {user_id} | Raw Data: {data}\n"
+            print(log_entry)
+            with open("vault_relay.log", "a") as f:
+                f.write(log_entry)
             # The backend acts as a dumb relay for anything formatted as JSON
             # Expecting messages of format: {"target": "user2", "payload": "encrypted_blob", "type": "chat" | "key_exchange"}
             try:

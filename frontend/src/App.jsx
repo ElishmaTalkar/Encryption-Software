@@ -17,8 +17,8 @@ import Dashboard from './Dashboard'
 import ChatRoom from './ChatRoom'
 import './App.css'
 
-// The URL to the FastAPI websocket backend (assumed to run locally on 8000)
-const WS_URL = 'ws://localhost:8000/ws'
+// The URL to the FastAPI websocket backend (Dynamic for production)
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws'
 
 function App() {
   const [userId, setUserId] = useState(null)
